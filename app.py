@@ -3,7 +3,7 @@ from flask import Flask, request, jsonify
 import pickle
 
 app = Flask(__name__)
-model = pickle.load(open('best_model_xgb.pkl', 'rb'))
+model = pickle.load(open('model.pkl', 'rb'))
 
 @app.route('/')
 def home():
@@ -17,18 +17,21 @@ def predict():
 
         # Extract features 
         cement = float(data['Cement'])
-        slag = float(data['Slag'])
-        fly_ash = float(data['fly_ash'])
+        slag = float(data['Blast Furnace Slag'])
+        fly_ash = float(data['Fly Ash'])
         water = float(data['Water'])
-        superplasticizer = float(data['superplasticizer'])
-        coarse_aggregate = float(data['coarse_aggregate'])
-        fine_aggregate = float(data['fine_aggregate'])
-        age = int(data['age'])
+        superplasticizer = float(data['Superplasticizer'])
+        coarse_aggregate = float(data['Coarse Aggregate'])
+        fine_aggregate = float(data['Fine Aggregate'])
+        age = int(data['Age (day)'])
+
+    
         features = np.array([[cement, slag, fly_ash, water, superplasticizer, coarse_aggregate, fine_aggregate, age]])
-        prediction = model.predict(features)[0]
+
+        prediction = float(model.predict(features)[0])
 
         return jsonify({
-            "strength": prediction,
+            "Concrete_Compressive_Strength": prediction,
             "statusCode": 200
         }), 200
 
